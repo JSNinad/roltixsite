@@ -1,14 +1,41 @@
-// Import packages
 const express = require("express");
-const home = require("./routes/home");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
 
-// Middlewares
+const routes = require("./routes/userRoute");
+
+dotenv.config();
+
+const port = process.env.PORT;
+
 const app = express();
+
+app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
+
 app.use(express.json());
 
-// Routes
-app.use("/home", home);
+app.use(cors());
 
-// connection
-const port = process.env.PORT || 9001;
-app.listen(port, () => console.log(`Listening to port ${port}`));
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log("db connected");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+app.use("/", routes);
+
+app.get("/ping",(req,res)=>{
+  res.send("pong")
+})
+
+
+app.listen(port, () => {
+  console.log(`server running at ${port}`);
+});
