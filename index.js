@@ -18,7 +18,13 @@ app.use(cookieParser());
 
 app.use(express.json());
 
-app.use(cors());
+app.use(cors(
+  {
+    origin:["https://roltixsitenew-git-master-jsninad.vercel.app"],
+    methods:["POST","GET"],
+    credentials:true
+   }
+ ))
 
 mongoose
   .connect(process.env.MONGODB_URI)
